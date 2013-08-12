@@ -155,8 +155,6 @@ def get_course(cid):
     allscore = get_all_score_from_id(cid)
     course = get_course_from_id(cid)
     mods = get_mods_from_id(score['sid'])
-    print score, course, allscore
-
     return render_template('coursedetail.html', allscore=allscore, course=course, myscore=score, mods=mods)
 
 @app.route('/course/alter/<int:cid>/<int:mod>')
