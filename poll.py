@@ -74,6 +74,14 @@ def adduser():
             error = "invalid arguments"
     return render_template('adduser.html', error=error)
 
+@app.route('/reset', methods=['GET', 'POST'])
+def reset():
+    if session['admin'] == False:
+        return redirect(url_for('login'))
+    error = None
+    init_db()
+    return redirect(url_for('logout'));
+
 
 @app.route('/addcourse', methods=['GET', 'POST'])
 def addcourse():

@@ -4,4 +4,5 @@
 {% if error %}<p class=error><strong>Error:</strong> {{ error }}{% endif %}
 <p><a href="{{ url_for('adduser') }}">add user</a></p>
 <p><a href="{{ url_for('addcourse') }}">add course</a></p>
+<p class='error'><a href="{{ url_for('reset') }}">reset site (this action takes effect directly)</a></p>
 {% endblock %}
