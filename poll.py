@@ -48,21 +48,21 @@ def login():
             session['logged_in'] = True
             session['uname'] = uname
             flash('You were logged in')
-            return redirect(url_for('listuser'))
+            return redirect(url_for('listcourses'))
         error = "incorrect password";
         return render_template('login.html', error=error)
     return render_template('login.html', error=error)
 
 @app.route('/admin', methods=['GET', 'POST'])
 def admin():
-    if session['admin'] == False:
-        return redirect(url_for('login'))
+    if not 'admin' in session or session['admin'] == False:
+        abort(404)
     return render_template('admin.html')
 
 @app.route('/adduser', methods=['GET', 'POST'])
 def adduser():
-    if session['admin'] == False:
-        return redirect(url_for('login'))
+    if not 'admin' in session or session['admin'] == False:
+        abort(404)
     error = None
     if request.method == 'POST':
         if request.form['password'] == request.form['password2'] and len(request.form['password'])!= 0 and len(request.form['username'])!= 0 :
@@ -76,8 +76,8 @@ def adduser():
 
 @app.route('/reset', methods=['GET', 'POST'])
 def reset():
-    if session['admin'] == False:
-        return redirect(url_for('login'))
+    if not 'admin' in session or session['admin'] == False:
+        abort(404)
     error = None
     init_db()
     return redirect(url_for('logout'));
@@ -85,8 +85,8 @@ def reset():
 
 @app.route('/addcourse', methods=['GET', 'POST'])
 def addcourse():
-    if session['admin'] == False:
-        return redirect(url_for('login'))
+    if not 'admin' in session or session['admin'] == False:
+        abort(404)
     error = None
     if request.method == 'POST':
         if len(request.form['name'])!= 0 :
@@ -99,14 +99,40 @@ def addcourse():
 
 @app.route('/listuser', methods=['GET', 'POST'])
 def listuser():
-    if not 'logged_in' in session or session['logged_in'] == False:
-        return redirect(url_for('login'))
+    if not 'admin' in session or session['admin'] == False:
+        abort(404)
     error = None
     cur = g.db.execute('select uname from users')
     users = [dict(uname=row[0]) for row in cur.fetchall()]
     return render_template('listuser.html', users=users)
 
-@app.route('/listcourses', methods=['GET', 'POST'])
+@app.route('/listuser/<string:uname>/<int:cid>', methods=['GET', 'POST'])
+def listuser_for_uname_and_cid(uname, cid):
+    if not 'admin' in session or session['admin'] == False:
+        abort(404)
+    error = None
+    score = get_score_from_id(cid,uname=uname)
+    if score == None:
+        abort(404)
+    allscore = get_all_score_from_id(cid)
+    course = get_course_from_id(cid)
+    mods = get_mods_from_id(score['sid'])
+    return render_template('coursedetail.html', allscore=allscore, course=course, myscore=score, mods=mods, readonly=True)
+
+@app.route('/listuser/<string:uname>', methods=['GET', 'POST'])
+def listuser_admin(uname):
+    if not 'admin' in session or session['admin'] == False:
+        abort(404)
+    cur = g.db.execute('select cid, name from courses')
+    courses = []
+    for row in cur.fetchall():
+        score = get_score_from_id(row[0],uname=uname)
+        if score != None:
+            courses.append(dict(cid=row[0],name=row[1],score=score) )
+    #course= [get_score_from_id(course['cid'])['score'] for course in courses]
+    return render_template('listcourses.html', courses=courses)
+
+@app.route('/course', methods=['GET', 'POST'])
 def listcourses():
     if not 'logged_in' in session or session['logged_in'] == False:
         return redirect(url_for('login'))
@@ -124,8 +150,11 @@ def get_course_from_id(cid):
     else:
         return None
 
-def get_score_from_id(cid):
-    cur = g.db.execute('select uname, cid, score, sid from scores where uname = ? and cid = ?', [session['uname'], cid])
+def get_score_from_id(cid, **kwargs):
+    uname = session['uname']
+    if ('uname' in kwargs):
+        uname = kwargs['uname']
+    cur = g.db.execute('select uname, cid, score, sid from scores where uname = ? and cid = ?', [uname, cid])
     score = [dict(uname=row[0], cid=row[1], score=row[2], sid=row[3]) for row in cur.fetchall()];
     if len(score) > 0:
         return score[0]

@@ -1,15 +1,51 @@
 {% extends "layout.html" %}
 {% block body %}
+<script src="{{ url_for('static', filename='Chart.js') }}"></script>
+<script language="javacript" type="text/javascript">
+    var options= {
+        scaleOverride: false,
+        scaleSteps: 10,
+        scaleStepWidth: 10,
+        scaleStartValue: 0,
+        scaleShowGridLines: false,
+        bezierCurve: false,
+        animation: false
+    }
+    var data = {
+        labels : [
+            {% for m in mods%}
+            "",
+            {% endfor %}
+        ],
+        datasets : [
+            {
+                fillColor : "rgba(220,220,220,0.5)",
+                strokeColor : "rgba(220,220,220,1)",
+                pointColor : "rgba(220,220,220,1)",
+                pointStrokeColor : "#fff",
+                data : [
+                    {% for m in mods%}
+                    {{ m.mod_result }},
+                    {% endfor %}
+                ]
+            },
+        ]
+    }
+</script>
 <h2>Course {{ course.name }} </h2>
 <div class="pagination" align="center">
     <ul>
+        {% if not readonly %}
         <li><a href="{{ url_for('alter_score',cid=myscore.cid,mod=0) }}">-3</a></li>
         <li><a href="{{ url_for('alter_score',cid=myscore.cid,mod=1) }}">-2</a></li>
         <li><a href="{{ url_for('alter_score',cid=myscore.cid,mod=2) }}">-1</a></li>
+        {% endif %}
         <li class=score><a href="#"><b>{{ myscore.score }}</b></a></li>
+        {% if not readonly %}
         <li><a href="{{ url_for('alter_score',cid=myscore.cid,mod=3) }}">+1</a></li>
         <li><a href="{{ url_for('alter_score',cid=myscore.cid,mod=4) }}">+2</a></li>
         <li><a href="{{ url_for('alter_score',cid=myscore.cid,mod=5) }}">+3</a></li>
+        {% endif %}
     </ul>
 </div>
 <h2>Score of others</h2>
@@ -35,6 +71,10 @@
 </ul>
 <h2>Change Log</h2>
 <ul class=entries>
+    <canvas id="canvas" width="450" height="450"></canvas>
+    <script language="javacript" type="text/javascript">
+        var myLine = new Chart(document.getElementById("canvas").getContext("2d")).Line(data,options);
+    </script>
     <table class="table table-bordered table-hover table-condensed">
         <thead>
             <tr>

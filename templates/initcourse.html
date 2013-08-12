@@ -1,7 +1,7 @@
 {% extends "layout.html" %}
 {% block body %}
 {% if error %}<p class=error><strong>Error:</strong> {{ error }}{% endif %}
-<h3>Set initial score for {{course.name}}</h3>
+<h3>Initial score for {{course.name}}</h3>
 <form action="{{ url_for('init_course', cid = course.cid) }}" method=post>
     <dl>
         <dt>Score:
