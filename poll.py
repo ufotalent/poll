@@ -168,10 +168,12 @@ def alter_score(cid, mod):
     if score == None:
         return redirect(url_for('init_course',cid=cid))
     moddict = {
-            0:-2,
-            1:-1,
-            2:1,
-            3:2
+            0:-3,
+            1:-2,
+            2:-1,
+            3:1,
+            4:2,
+            5:3
             }
     if mod in moddict:
         g.db.execute('update scores set score=score+? where sid=? ', [moddict[mod], score['sid']])

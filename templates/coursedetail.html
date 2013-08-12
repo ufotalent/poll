@@ -3,11 +3,13 @@
 <h2>Course {{ course.name }} </h2>
 <div class="pagination" align="center">
     <ul>
-        <li><a href="{{ url_for('alter_score',cid=myscore.cid,mod=0) }}">-2</a></li>
-        <li><a href="{{ url_for('alter_score',cid=myscore.cid,mod=1) }}">-1</a></li>
+        <li><a href="{{ url_for('alter_score',cid=myscore.cid,mod=0) }}">-3</a></li>
+        <li><a href="{{ url_for('alter_score',cid=myscore.cid,mod=1) }}">-2</a></li>
+        <li><a href="{{ url_for('alter_score',cid=myscore.cid,mod=2) }}">-1</a></li>
         <li class=score><a href="#"><b>{{ myscore.score }}</b></a></li>
-        <li><a href="{{ url_for('alter_score',cid=myscore.cid,mod=2) }}">+1</a></li>
-        <li><a href="{{ url_for('alter_score',cid=myscore.cid,mod=3) }}">+2</a></li>
+        <li><a href="{{ url_for('alter_score',cid=myscore.cid,mod=3) }}">+1</a></li>
+        <li><a href="{{ url_for('alter_score',cid=myscore.cid,mod=4) }}">+2</a></li>
+        <li><a href="{{ url_for('alter_score',cid=myscore.cid,mod=5) }}">+3</a></li>
     </ul>
 </div>
 <h2>Score of others</h2>
