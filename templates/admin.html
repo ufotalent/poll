@@ -1,0 +1,7 @@
+{% extends "layout.html" %}
+{% block body %}
+<h2>Admin</h2>
+{% if error %}<p class=error><strong>Error:</strong> {{ error }}{% endif %}
+<p><a href="{{ url_for('adduser') }}">add user</a></p>
+<p><a href="{{ url_for('addcourse') }}">add course</a></p>
+{% endblock %}

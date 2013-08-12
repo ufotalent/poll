@@ -1,0 +1,57 @@
+{% extends "layout.html" %}
+{% block body %}
+<h2>Course {{ course.name }} </h2>
+<div class="pagination" align="center">
+    <ul>
+        <li><a href="{{ url_for('alter_score',cid=myscore.cid,mod=0) }}">-2</a></li>
+        <li><a href="{{ url_for('alter_score',cid=myscore.cid,mod=1) }}">-1</a></li>
+        <li class=score><a href="#"><b>{{ myscore.score }}</b></a></li>
+        <li><a href="{{ url_for('alter_score',cid=myscore.cid,mod=2) }}">+1</a></li>
+        <li><a href="{{ url_for('alter_score',cid=myscore.cid,mod=3) }}">+2</a></li>
+    </ul>
+</div>
+<h2>Score of others</h2>
+<ul class=entries>
+    <table class="table table-bordered table-hover table-condensed">
+        <thead>
+            <tr>
+                <th>#</th>
+                <th>user</th>
+                <th>score</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for s in allscore %}
+            <tr {% if myscore.uname == s.uname %}class='selected' {% endif %} >
+                <th>{{ loop.index }}</th>
+                <th>{{ s.uname }}</th>
+                <th>{{ s.score }}</th>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</ul>
+<h2>Change Log</h2>
+<ul class=entries>
+    <table class="table table-bordered table-hover table-condensed">
+        <thead>
+            <tr>
+                <th>#</th>
+                <th>mod</th>
+                <th>result</th>
+                <th>time</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for m in mods %}
+            <tr >
+                <th>{{ loop.index }}</th>
+                <th>{{ m.mod_value }}</th>
+                <th>{{ m.mod_result }}</th>
+                <th>{{ m.mod_time }}</th>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</ul>
+{% endblock %}

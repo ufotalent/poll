@@ -1,0 +1,12 @@
+{% extends "layout.html" %}
+{% block body %}
+<h2>Courses</h2>
+<ul class=entries>
+    {% for course in courses %}
+        <li><h2><a href="{{ url_for('get_course', cid=course.cid) }}">{{ course.name }}</a></h2> 
+            {{course.score.score}}
+    {% else %}
+    <li><em>Unbelievable.  No courses here so far</em>
+    {% endfor %}
+</ul>
+{% endblock %}
