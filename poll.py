@@ -7,7 +7,7 @@ import datetime
 
 
 app = Flask("poll")
-app.config.from_object("db");
+app.config.from_object("config");
 
 def connect_db():
     return sqlite3.connect(app.config['DATABASE'])
@@ -212,4 +212,4 @@ def logout():
     return redirect(url_for('login'))
 
 if __name__ == '__main__':
-    app.run()
+    app.run(port=app.config['PORT'], host = app.config['HOST'], debug = app.config['DEBUG'])
