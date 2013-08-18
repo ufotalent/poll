@@ -55,9 +55,11 @@
             <li onclick='mod_click(5)'><a href='#'>+3</a></li>
             {% endif %}
         </ul>
+        {% if not readonly %}
         <ul>
             <textarea name="reason" placeholder="your reason"></textarea>
         </ul>
+        {% endif %}
     </form>
 </div>
 <h2>Score of others</h2>
