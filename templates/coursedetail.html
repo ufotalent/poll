@@ -31,22 +31,34 @@
             },
         ]
     }
+    function mod_click(mod) {
+        var form = document.getElementById("modform");
+        cid = {{course.cid}};
+        form.action = "/course/alter/"+cid+"/"+mod
+        form.submit()
+            
+    }
 </script>
 <h2>Course {{ course.name }} </h2>
 <div class="pagination" align="center">
-    <ul>
-        {% if not readonly %}
-        <li><a href="{{ url_for('alter_score',cid=myscore.cid,mod=0) }}">-3</a></li>
-        <li><a href="{{ url_for('alter_score',cid=myscore.cid,mod=1) }}">-2</a></li>
-        <li><a href="{{ url_for('alter_score',cid=myscore.cid,mod=2) }}">-1</a></li>
-        {% endif %}
-        <li class=score><a href="#"><b>{{ myscore.score }}</b></a></li>
-        {% if not readonly %}
-        <li><a href="{{ url_for('alter_score',cid=myscore.cid,mod=3) }}">+1</a></li>
-        <li><a href="{{ url_for('alter_score',cid=myscore.cid,mod=4) }}">+2</a></li>
-        <li><a href="{{ url_for('alter_score',cid=myscore.cid,mod=5) }}">+3</a></li>
-        {% endif %}
-    </ul>
+    <form id="modform" method="POST" action="/course/alter/{{course.cid}}/">
+        <ul>
+            {% if not readonly %}
+            <li onclick='mod_click(0)'><a href='#'>-3</a></li>
+            <li onclick='mod_click(1)'><a href='#'>-2</a></li>
+            <li onclick='mod_click(2)'><a href='#'>-1</a></li>
+            {% endif %}
+            <li class=score><a href="#"><b>{{ myscore.score }}</b></a></li>
+            {% if not readonly %}
+            <li onclick='mod_click(3)'><a href='#'>+1</a></li>
+            <li onclick='mod_click(4)'><a href='#'>+2</a></li>
+            <li onclick='mod_click(5)'><a href='#'>+3</a></li>
+            {% endif %}
+        </ul>
+        <ul>
+            <textarea name="reason" placeholder="your reason"></textarea>
+        </ul>
+    </form>
 </div>
 <h2>Score of others</h2>
 <ul class=entries>
@@ -82,6 +94,7 @@
                 <th>mod</th>
                 <th>result</th>
                 <th>time</th>
+                <th>reason</th>
             </tr>
         </thead>
         <tbody>
@@ -91,6 +104,7 @@
                 <th>{{ m.mod_value }}</th>
                 <th>{{ m.mod_result }}</th>
                 <th>{{ m.mod_time }}</th>
+                <th>{{ m.mod_reason }}</th>
             </tr>
             {% endfor %}
         </tbody>

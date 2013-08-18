@@ -27,6 +27,7 @@ create table transactions(
     mod_value integer,
     mod_time timestamp,
     mod_result integer,
+    mod_reason text,
     sid integer,
     FOREIGN KEY(sid) REFERENCES scores(sid)
 )

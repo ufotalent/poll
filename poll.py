@@ -137,7 +137,7 @@ def listcourses():
     if not 'logged_in' in session or session['logged_in'] == False:
         return redirect(url_for('login'))
     error = None
-    cur = g.db.execute('select cid, name from courses')
+    cur = g.db.execute('select cid, name from courses order by cid DESC')
     courses = [dict(cid=row[0],name=row[1],score=get_score_from_id(row[0])) for row in cur.fetchall()]
     #course= [get_score_from_id(course['cid'])['score'] for course in courses]
     return render_template('listcourses.html', courses=courses)
@@ -162,8 +162,8 @@ def get_score_from_id(cid, **kwargs):
         return None 
 
 def get_mods_from_id(sid):
-    cur = g.db.execute('select mod_value, mod_time, mod_result from transactions where sid = ? order by mod_time ASC', [sid])
-    mods = [dict(mod_value=row[0], mod_time=row[1], mod_result=row[2]) for row in cur.fetchall()];
+    cur = g.db.execute('select mod_value, mod_time, mod_result, mod_reason from transactions where sid = ? order by mod_time ASC', [sid])
+    mods = [dict(mod_value=row[0], mod_time=row[1], mod_result=row[2], mod_reason=row[3]) for row in cur.fetchall()];
     return mods
 
 def get_all_score_from_id(cid):
@@ -186,7 +186,7 @@ def get_course(cid):
     mods = get_mods_from_id(score['sid'])
     return render_template('coursedetail.html', allscore=allscore, course=course, myscore=score, mods=mods)
 
-@app.route('/course/alter/<int:cid>/<int:mod>')
+@app.route('/course/alter/<int:cid>/<int:mod>', methods=['GET', 'POST'])
 def alter_score(cid, mod):
     if not 'logged_in' in session or session['logged_in'] == False:
         return redirect(url_for('login'))
@@ -204,7 +204,7 @@ def alter_score(cid, mod):
             }
     if mod in moddict:
         g.db.execute('update scores set score=score+? where sid=? ', [moddict[mod], score['sid']])
-        g.db.execute('insert into transactions (sid, mod_value, mod_time, mod_result) values (?,?,?,?)',[score['sid'], moddict[mod], datetime.datetime.now(), score['score']+moddict[mod] ])
+        g.db.execute('insert into transactions (sid, mod_value, mod_time, mod_result, mod_reason) values (?,?,?,?,?)',[score['sid'], moddict[mod], datetime.datetime.now(), score['score']+moddict[mod], request.form['reason'] ])
         g.db.commit()
         flash('score mod success!');
     return redirect(url_for('get_course',cid=cid))
